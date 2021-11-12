@@ -11,7 +11,7 @@ const router = Router()
 router.post('/authenticate', new AuthenticateUserController().handle)
 
 router.post(
-    'messages', 
+    '/messages', 
     ensureAuthenticated, 
     new CreateMessageController().handle
 )

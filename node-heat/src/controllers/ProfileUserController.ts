@@ -1,9 +1,9 @@
-import {request, Request, response, Response} from 'express';
+import {Request, Response} from 'express';
 import { ProfileUserService } from '../services/ProfileUserService';
 
 
 class ProfileUserController {
-    async handle(req: Request, res: Response) {
+    async handle(request: Request, response: Response) {
         const { user_id } = request
 
         const service = new ProfileUserService()
