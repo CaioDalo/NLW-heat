@@ -11,9 +11,10 @@ type User = {
 type AuthContextData = {
     user: User | null;
     signInUrl: string;
+    signOut: () => void;
 }
 
-const AuthContext = createContext({} as AuthContextData) 
+export const AuthContext = createContext({} as AuthContextData) 
 
 type AuthProvider = {
     children: ReactNode;
@@ -46,6 +47,24 @@ export function AuthProvider(props: AuthProvider) {
         setUser(user)
     }
 
+    function signOut() {
+        setUser(null)
+        localStorage.removeItem('@dowhile:token')
+    }
+
+    useEffect(() => {
+        
+        const token = localStorage.getItem('@dowhile:token')
+        
+        api.defaults.headers.common.authorization = `Bearer ${token}`
+        
+        if(token) {
+            api.get<User>('profile').then(response => {
+                setUser(response.data)
+            })
+        }
+    })
+
     useEffect(() => {
         const url = window.location.href
 
@@ -62,7 +81,7 @@ export function AuthProvider(props: AuthProvider) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{signInUrl, user}}>
+        <AuthContext.Provider value={{signInUrl, user, signOut}}>
             {props.children}
         </AuthContext.Provider>
     )
